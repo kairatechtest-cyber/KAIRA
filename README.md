@@ -1,148 +1,142 @@
-📘 KAIRA Dashboard – Real-Time Monitoring & Weather Widget
+# 📘 KAIRA Technologies – Real-Time Dashboard & Weather Widget
 
-A modern, responsive, multi-module dashboard for industry monitoring, WhatsApp messaging, and real-time weather updates.
-Built with pure HTML, CSS, JavaScript, and deployed using Vercel.
+A modern, responsive, multi-module dashboard for industrial monitoring, WhatsApp messaging, and real-time weather updates.  
+Built using **pure HTML, CSS, JavaScript**, and deployed via **Vercel**.
 
-🚀 Features
-🔹 1. Interactive Sidebar Navigation
+---
 
-Water Dashboards (Grafana)
+# 🚀 Features
 
-Water Reports (Looker Studio)
+## 🔹 1. Interactive Sidebar Navigation
+- Water → Dashboards (Grafana)
+- Water → Reports (Looker Studio)
+- Tyre → Mixer → TBM (multi-level dropdown)
+- WhatsApp Messaging module
 
-Tyre → Mixer → TBM multi-level dropdown menus
+## 🔹 2. Premium Weather Widget (Iframe)
+- Live weather from **WeatherAPI.com**
+- Includes:
+  - Mini widget (floating bottom-right)
+  - Expandable full panel
+  - 5-day forecast
+  - Astronomy (sunrise/sunset)
+  - Marine data
+  - Air Quality
+  - Alerts
+- Auto-detect user location (GPS/IP)
+- Refreshes every 60 seconds
+- Uses `postMessage` to expand/collapse iframe
 
-WhatsApp Messaging Module (custom UI)
+## 🔹 3. WhatsApp Messaging Module
+- Clean, glass UI
+- Sends WhatsApp messages via backend API  
+- Endpoint: `POST /api/send-message`
+- Built using Node.js (server.js)
 
-🔹 2. Premium Weather Widget
+## 🔹 4. Modern UI/UX
+- Glassmorphism cards  
+- Gradient backgrounds  
+- Poppins font  
+- Smooth animations  
+- Responsive layout  
 
-Live weather from WeatherAPI.com
+---
 
-Mini card + Expandable full panel
-
-5-day forecast
-
-Astronomy, Marine, Air Quality, Alerts
-
-Parent-iframe communication using postMessage
-
-Auto refresh every 60 seconds
-
-🔹 3. WhatsApp Messaging Module
-
-Clean UI for entering mobile number
-
-Sends messages via /api/send-message endpoint
-
-Integrated with Node.js server (server.js)
-
-Error handling + success message
-
-🔹 4. Modern UI / UX
-
-Glassmorphism cards
-
-Poppins font
-
-Gradient backgrounds
-
-Smooth expand animations
-
-Responsive layout
-
-📂 Project Structure
+# 📂 Project Structure
+```
 /webpage
-│
-├── index.html             # Main dashboard UI
-├── weather-widget.html    # Weather widget inside iframe
-├── server.js              # WhatsApp API backend handler
-├── package.json           # Node + Vercel dependencies
-├── vercel.json            # Routing & build configuration
-├── README.md              # Documentation file
+│── index.html # Main dashboard UI
+│── weather-widget.html # Weather widget (iframe internal page)
+│── server.js # WhatsApp API backend handler
+│── package.json # Node + Vercel dependencies
+│── vercel.json # Routing & build configuration
+│── README.md # Documentation
 └── LICENSE (optional)
 
-⚙️ How to Run Locally
-1. Install Node.js
+```
+---
 
-https://nodejs.org/
+# ⚙️ Local Setup
 
-2. Install dependencies
+## 1️⃣ Install Node.js  
+Download from: ```https://nodejs.org/```
+
+## 2️⃣ Install dependencies
+```sh
 npm install
-
-3. Start local server
+```
+3️⃣ Start local server
+```
 node server.js
-
-
-Your dashboard will open at:
-
-http://localhost:3000
-
-🌤️ Weather Widget – Setup Instructions
+```
+Your project opens at:
+```
+👉 http://localhost:3000
+```
+🌤️ Weather Widget Setup
 ✔ 1. Add iframe inside index.html
+```
 <iframe src="/weather-widget" id="weatherFrame" class="weather-iframe"></iframe>
+```
+✔ 2. Widget sends expand/collapse events
 
-✔ 2. Enable expand/collapse from widget
-
-Your weather widget sends messages to the parent:
-
+Inside weather-widget.html:
+```
 window.parent.postMessage({ type: "weatherExpand" }, "*");
 window.parent.postMessage({ type: "weatherCollapse" }, "*");
+```
+✔ 3. Parent listens for events
 
-✔ 3. Parent listens inside index.html:
+Inside index.html:
+```
 window.addEventListener("message", (event) => {
   const frame = document.getElementById("weatherFrame");
 
-  if (event.data.type === "weatherExpand") {
-    frame.classList.add("expanded");
-  }
-  if (event.data.type === "weatherCollapse") {
-    frame.classList.remove("expanded");
-  }
+  if (event.data.type === "weatherExpand") frame.classList.add("expanded");
+  if (event.data.type === "weatherCollapse") frame.classList.remove("expanded");
 });
+```
+✔ 4. Set your Weather API key
 
-🍃 Weather API Setup
-
-Weather powered by WeatherAPI.com
-
-Replace inside weather-widget.html:
-
+Inside weather-widget.html:
+```
 const apiKey = "YOUR_API_KEY_HERE";
-
-
+```
 Get free API key:
+```
 👉 https://www.weatherapi.com/
-
-💬 WhatsApp Messaging API
-✔ Endpoint (Node.js)
-
-server.js handles the API:
-
-POST /api/send-message
-
-✔ Frontend call:
+```
+💬 WhatsApp API – Integration
+Backend Route (server.js)
+```
+Handles: POST /api/send-message
+```
+```
+Frontend Call
 fetch("/api/send-message", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ mobile })
-})
+});
+```
 
+Displays success or error in UI.
 
-Displays success or error inside the UI.
-
-▲ Vercel Deployment
-1. Install Vercel CLI
+▲ Deploying to Vercel
+1️⃣ Install Vercel CLI
+```
 npm i -g vercel
-
-2. Login
+```
+2️⃣ Login
+```
 vercel login
-
-3. Deploy
+```
+3️⃣ Deploy
+```
 vercel
-
-📁 Important: Vercel Routing
-
-Your vercel.json:
-
+```
+📁 Required vercel.json
+```
 {
   "version": 2,
   "builds": [
@@ -156,27 +150,46 @@ Your vercel.json:
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
-
-
+```
 This ensures:
+```
+/api/send-message → backend
 
-/api/send-message → Node server
-
-/weather-widget → correct weather widget
+/weather-widget → widget iframe
 
 / → dashboard
+```
+
+# 🛠 Tech Stack
+
+HTML5, CSS3, JavaScript (Vanilla)
+
+Node.js
+
+Vercel Serverless Functions
+
+WeatherAPI.com
+
+FontAwesome Icons
+
+Google Fonts (Poppins)
+
+CSS Glassmorphism + Animations
+
+# 👨‍💻 Author
+
+KAIRA Technologies
+Real-Time Industrial Data Monitoring & Automation Solutions
+```
+🌐 https://kaira-technologies.com/
+```
+# 📄 License
+
+Licensed under the MIT License.
+
+# ⭐ Support
+
+If this project helps you, please ⭐ star the repository!
 
 
-
-🤝 Contributing
-
-Pull requests are welcome.
-For major changes, please open an issue first.
-
-📄 License
-
-MIT License
-
-⭐ If you like this project
-
-You can star the GitHub repo!
+---
